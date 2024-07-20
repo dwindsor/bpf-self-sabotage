@@ -49,7 +49,7 @@ union bpf_attr {
 This structure allows userspace applications to convey a wide range of parameters and configurations to the kernel when performing eBPF operations. The versatility and flexibility of struct `bpf_attr` are key to the powerful capabilities of eBPF.
 
 ### The Attack: Rewriting bpf Programs as No-Op Slides
-In this attack, the adversary hooks the `sys_bpf` kernel function, which is used to service `bpf(2)` from userspace, to alter the behavior of eBPF programs. By doing so, they can effectively nullify specific eBPF programs by rewriting their instructions to be effective no-op operations. Here’s a rough outline of how it works:
+In this attack, the adversary hooks the `sys_bpf` kernel functio, which is used to service userspace `bpf(2)` system calls, to alter the behavior of eBPF programs. By doing so, they can effectively nullify specific eBPF programs by rewriting their instructions to be effective no-op operations. Here’s a rough outline of how it works:
 
 1. Hook `sys_bpf`: Place a hook on `sys_bpf` via the `sys_enter` tracepoint. Other attachment types are possible, but tracepoints have wider support.
 
