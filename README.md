@@ -191,6 +191,16 @@ In the `tetraà window, we only process `exit` events! No execution events are p
 💥 exit     /usr/bin/bash  1
 ```
 
+### Impact
+
+While we're focusing on bypassing Tetragon in this example, the same technique can be used to target programs from any security agent that uses eBPF:
+
+#### Sysdig/Falco
+<demo video>
+
+#### Aquasec
+<demo video>
+
 ### Detection
 
 Detection is made more difficult because user eBPF probe insertions will still succeed, but the programs themselves will be completely inert. From a user perspective, calls to `bpf(2)` will still succeed, so user applications will proceed as if the insertion of their program happened successfully.
