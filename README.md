@@ -2,7 +2,7 @@
 
 ### Introduction
 
-In recent years, the Extended Berkeley Packet Filter (eBPF) has become an essential tool in the Linux kernel for performance monitoring, networking, and security. However, as with any powerful technology, it can be turned against itself if misused or exploited. This blog post explores a fascinating attack vector where eBPF is used against itself and manipulated to sabotage its own programs by exploiting the `sys_bpf` system call.
+In recent years, the Extended Berkeley Packet Filter (eBPF) has become an essential tool in the Linux kernel for performance monitoring, networking, and security. However, as with any powerful technology, it can be turned against itself if misused or exploited. This blog post explores a fascinating attack vector where eBPF is used against itself and manipulated to sabotage its own programs by exploiting the `bpf(2)` system call.
 
 ### Understanding eBPF and `bpf(2)`
 
