@@ -30,7 +30,8 @@ Here's a simplified version of the `struct bpf_attr` definition:
 
 ```c
 union bpf_attr {
-    struct { /* anonymous struct used by BPF_PROG_LOAD command */
+    struct {
+	// anonymous struct used by BPF_PROG_LOAD command
         __u32 prog_type;
         __u32 insn_cnt;
         __u64 insns;
