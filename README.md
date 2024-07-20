@@ -191,3 +191,42 @@ In the `tetraà window, we only process `exit` events! No execution events are p
 💥 exit     /usr/bin/bash  1
 ```
 
+### Detection
+
+Detection is made more difficult because user eBPF probe insertions will still succeed, but the programs themselves will be completely inert. From a user perspective, calls to `bpf(2)` will still succeed, so user applications will proceed as if the insertion of their program happened successfully.
+
+Manually dumping the instructions of the hijacked exevce_event would indeed reveal no-ops are present:
+
+```
+> bpftool prog dump xlated tag c1258805115d7c8c |tail -10
+; data->mnt = parent;
+ 15866: (b7) r0 = 0
+ 15867: (b7) r0 = 0
+ 15868: (b7) r0 = 0
+; probe_read(&data->vfsmnt, sizeof(data->vfsmnt),
+ 15869: (b7) r0 = 0
+ 15870: (b7) r0 = 0
+ 15871: (b7) r0 = 0
+ 15872: (b7) r0 = 0
+ 15873: (95) exit
+```
+
+This is impractical and not scalable, though.
+
+### Mitigation
+
+`bpf_probe_write_user` is the helper that's used to overwrite the contents of userspace memory in the eBPF programs. This function is considered dangerous, and distributions may benefit from disabling it altogether. As of this writing, the latest version of Ubuntu (Noble) still has it enabled by default:
+
+```shell
+dave@ubuntu24:~$ uname -a
+Linux ubuntu24 6.8.0-38-generic #38-Ubuntu SMP PREEMPT_DYNAMIC Fri Jun  7 15:25:01 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+dave@ubuntu24:~$ sudo cat /proc/kallsyms |grep bpf_probe_write_user
+[sudo] password for dave:
+ffffffffb74e6dd0 T __pfx_bpf_probe_write_user
+ffffffffb74e6de0 T bpf_probe_write_user
+ffffffffb88362e0 d bpf_probe_write_user_proto
+```
+
+Ideally, trusted eBPF programs should be protected by hardware, as other secure programs and secrets are, using the Trusted Platform Module (TPM). Keys could be loaded into the Linux bootloader, similar to how Secureboot installs keys, and then used by the kernel to decrypt and load the programs, ensuring they have not been altered.
+
+ 
