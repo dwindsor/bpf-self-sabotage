@@ -193,7 +193,7 @@ In the `tetra` window, we only process `exit` events! No execution events are pr
 
 ### Impact
 
-While we're focusing on bypassing Tetragon in this example, the same technique can be used to target programs from any security agent that uses eBPF:
+While we're focusing on bypassing Tetragon in this example, *ALL SECURITY AGENTS THAT USE eBPF ARE VULNERABLE TO THIS ATTACK*.
 
 #### Sysdig/Falco
 <demo video>
