@@ -139,8 +139,6 @@ int handle_bpf_enter(struct trace_event_raw_sys_enter *ctx)
 
                 // Iterate over the instructions passed by userspace and convert them to no-ops.
                 for (__u32 i = 0; i < TARGET_BPF_INSNS; i++) {
-                        bpf_probe_read_user(&insn, sizeof(insn), &((struct bpf_insn *)uattr.insns)[i]);
-
                         // The last instruction has to be a jmp or exit
                         if (i == insn_cnt-1) {
                                 nop_insn.code = BPF_EXIT;
