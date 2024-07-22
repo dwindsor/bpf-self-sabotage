@@ -24,7 +24,7 @@ int bpf(int cmd, union bpf_attr *attr, unsigned int size);
 
 ### The Role of `union bpf_attr`
 
-`union bpf_attr` plays a crucial role in conveying parameters about eBPF programs from userspace to the kernel. This structure is used by the `bpf(2)` system call to pass various attributes and parameters related to eBPF programs and maps. Relevant to this discussion is how `union bpf_attr` is used for program loading. When loading an eBPF program, the `bpf_attr` uniuon contains information such as the pointer to the array of instructions (`insns`), the number of instructions (`insn_cnt`), and the type of program (`prog_type`).
+`union bpf_attr` plays a crucial role in conveying parameters about eBPF programs from userspace to the kernel. This structure is used by the `bpf(2)` system call to pass various attributes and parameters related to eBPF programs and maps. Relevant to this discussion is how `union bpf_attr` is used for program loading. When loading an eBPF program, the `bpf_attr` union contains information such as the pointer to the array of instructions (`insns`), the number of instructions (`insn_cnt`), and the type of program (`prog_type`).
 
 Here's a simplified version of the `struct bpf_attr` definition:
 
@@ -49,7 +49,9 @@ union bpf_attr {
 This structure allows userspace applications to convey a wide range of parameters and configurations to the kernel when performing eBPF operations. The versatility and flexibility of struct `bpf_attr` are key to the powerful capabilities of eBPF.
 
 ### The Attack: Rewriting bpf Programs as No-Op Slides
-In this attack, the adversary hooks the `sys_bpf` kernel functio, which is used to service userspace `bpf(2)` system calls, to alter the behavior of eBPF programs. By doing so, they can effectively nullify specific eBPF programs by rewriting their instructions to be effective no-op operations. Here’s a rough outline of how it works:
+In this attack, the adversary hooks the `sys_bpf` kernel function to alter the behavior of eBPF programs. `sys_bpf` is the kernel function used to service userspace `bpf(2)` system calls. By doing so, they can effectively nullify specific eBPF programs by rewriting their instructions to be no-ops.
+
+Here’s a rough outline of how it works:
 
 1. Hook `sys_bpf`: Place a hook on `sys_bpf` via the `sys_enter` tracepoint. Other attachment types are possible, but tracepoints have wider support.
 
