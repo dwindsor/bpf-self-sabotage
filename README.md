@@ -2,7 +2,11 @@
 
 ### Introduction
 
-In recent years, the Extended Berkeley Packet Filter (eBPF) has become an essential tool in the Linux kernel for performance monitoring, networking, and security. However, as with any powerful technology, it can be turned against itself if misused or exploited. This blog post explores a fascinating attack vector where the eBPF kernel subsystem is used to sabotage its own functionality by hooking and abusing the kernel component of the `bpf(2)` system call.
+In recent years, the Extended Berkeley Packet Filter (eBPF) has become an essential tool in the Linux kernel for performance monitoring, networking, and security. Particularly with respect to security applications, the integrity of eBPF programs needs to be assured.
+
+If an attacker were somehow able to modify an eBPF program before or after it has been loaded into kernel memory, they could DoS the system, hide their tracks or create false telemetry among other things. This blog post explores a fascinating attack vector where the eBPF kernel subsystem is used to sabotage its own functionality by hooking and abusing the kernel component of the `bpf(2)` system call to modify eBPF programs after they have been submitted by userspace but before they have been loaded into kernel memory.
+
+The conclusion reached at the end of this reserach is that eBPF programs need to be protected from modification. They are similar to kernel modules in that they can alter the flow of kernel code paths and therefore should be protected by similarly strong controls such as cryptographic signing and verification.
 
 ### Understanding eBPF and `bpf(2)`
 
@@ -20,11 +24,7 @@ int bpf(int cmd, union bpf_attr *attr, unsigned int size);
 
 ### The Role of `union bpf_attr`
 
-`union bpf_attr` plays a crucial role in conveying parameters about eBPF programs from userspace to the kernel. This structure is used by the `bpf(2)` system call to pass various attributes and parameters related to eBPF programs and maps. Relevant to this discussion is how `union bpf_attr` is used for:
-
-- **Program Loading**: When loading an eBPF program, the `bpf_attr` uniuon contains information such as the pointer to the array of instructions (`insns`), the number of instructions (`insn_cnt`), and the type of program (`prog_type`).
-- **Map Creation and Management**: For map operations, `bpf_attr` holds attributes such as the map type (`map_type`), key size (`key_size`), value size (`value_size`), and the maximum number of entries (`max_entries`).
-- **Program Attachment**: When attaching an eBPF program to a specific hook point, `bpf_attr` includes fields such as the target file descriptor (`target_fd`), the attach type (`attach_type`), and the program file descriptor (`prog_fd`).
+`union bpf_attr` plays a crucial role in conveying parameters about eBPF programs from userspace to the kernel. This structure is used by the `bpf(2)` system call to pass various attributes and parameters related to eBPF programs and maps. Relevant to this discussion is how `union bpf_attr` is used for program loading. When loading an eBPF program, the `bpf_attr` uniuon contains information such as the pointer to the array of instructions (`insns`), the number of instructions (`insn_cnt`), and the type of program (`prog_type`).
 
 Here's a simplified version of the `struct bpf_attr` definition:
 
