@@ -211,7 +211,7 @@ We disable the Falco probe responsible for detecting `openat_x` events, allowing
 
 ### Detection
 
-Detection is made more difficult because user eBPF probe insertions will still succeed, but the programs themselves will be completely inert. From a user perspective, calls to `bpf(2)` will still succeed, so user applications will proceed as if the insertion of their program happened successfully.
+Detection is made more difficult because user eBPF probe insertions will still succeed, but the programs themselves will be completely inert. 
 
 Manually dumping the instructions of the hijacked exevce_event would indeed reveal no-ops are present:
 
