@@ -4,7 +4,7 @@
 
 In recent years, the Extended Berkeley Packet Filter (eBPF) has become an essential tool in the Linux kernel for performance monitoring, networking, and security. As eBPF becomes more mainstream, security vendors are turning away from kernel drivers and towards eBPF for sensors and enforcement components.
 
-eBPF was invented as a performance observability tool, so the integrity of eBPF programs wasn't originally considered important. After all, if a sensor misses some performance data, it isn't the end of the world. However, as eBPF is increasingly finding its way into security agents, the consequences of eBPF attacks have to be considered.
+eBPF was invented as a performance observability tool, so the integrity of eBPF programs wasn't originally considered important. After all, if a sensor misses some performance data, it isn't the end of the world. However, as eBPF is increasingly finding its way into security agents, the consequences of eBPF attacks have to be reconsidered.
 
 If an attacker were somehow able to modify an eBPF program before or after it has been loaded into kernel memory, they could DoS the system, hide their tracks or create false telemetry among other things. This blog post explores a fascinating attack vector where the eBPF kernel subsystem is used to sabotage its own functionality by hooking and abusing the kernel component of the `bpf(2)` system call to modify eBPF programs after they have been submitted by userspace but before they have been loaded into kernel memory. An attack like this is difficult to detect because all eBPF programs will still load without error.
 
