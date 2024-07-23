@@ -85,7 +85,7 @@ tracepoint  name event_execve  tag bf21fa49f817a040  gpl
  15874: (95) exit
 ```
  
-The number before the colon (`15874`) is the instruction count. We can now write a bpf program specifically targeting Tetragon `event_execve` programs.
+The number before the colon (`15874`) is the instruction count. We can now write a bpf program specifically targeting Tetragon `event_execve` programs. *This number doesn't always exactly match and sometimes a `+`/`-` tolerance needs to be added*.
 
 ```c
 #include "vmlinux.h"
