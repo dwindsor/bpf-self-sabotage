@@ -196,7 +196,7 @@ In the `tetra` window, we only process `exit` events! No execution events are pr
 While we're focusing on bypassing Tetragon in this example, all security agent using eBPF are vulnerable to this attack.
 
 #### Sysdig/Falco
-<demo video>
+![Disabling openat_x](./hijack-falco.gif)
 
 #### Aquasec
 <demo video>
