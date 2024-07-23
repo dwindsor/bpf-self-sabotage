@@ -22,7 +22,7 @@ The `bpf(2)` system call provides userspace with an interface to load, manipulat
 int bpf(int cmd, union bpf_attr *attr, unsigned int size);
 ```
 
- When a user wants to load an eBPF program, they provide a pointer to an array of `union bpf_insn`, which contains the intructions for the eBPF virtual machine to execute.
+ When a user wants to load an eBPF program, they provide a pointer to a `union bpf_insn`, which contains the intructions for the eBPF virtual machine to execute.
 
 ### The Role of `union bpf_attr`
 
