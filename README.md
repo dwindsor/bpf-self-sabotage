@@ -29,6 +29,8 @@ int bpf(int cmd, union bpf_attr *attr, unsigned int size);
 Here's a simplified version of the `struct bpf_attr` definition:
 
 ```c
+#define BPF_OBJ_NAME_LEN 16
+
 union bpf_attr {
     struct {
 	// anonymous struct used by BPF_PROG_LOAD command
@@ -41,6 +43,7 @@ union bpf_attr {
         __u64 log_buf;
         __u32 kern_version;
         __u32 prog_flags;
+	char prog_name[BPF_OBJ_NAME_LEN];
     };
     // Other command-specific structs
 };
@@ -85,7 +88,9 @@ tracepoint  name event_execve  tag bf21fa49f817a040  gpl
  15874: (95) exit
 ```
  
-The number before the colon (`15874`) is the instruction count. We can now write a bpf program specifically targeting Tetragon `event_execve` programs. *This number doesn't always exactly match and sometimes a `+`/`-` tolerance needs to be added*.
+The number before the colon (`15874`) is the instruction count. We can now write a bpf program specifically targeting Tetragon `event_execve` programs. *Depending on optimizations, this number doesn't always exactly match and sometimes a `+`/`-` tolerance needs to be added*.
+
+Programs can also be targeted by `prog_name`, but this is limited to `BPF_OBJ_NAME_LEN` characters, which may not be enough to resolve all cases.
 
 ```c
 #include "vmlinux.h"
