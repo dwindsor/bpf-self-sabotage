@@ -96,10 +96,10 @@ Programs can also be targeted by `prog_name`, but this is limited to `BPF_OBJ_NA
 
 ```c
 #include "vmlinux.h"
+#include "bpfhijack.h"
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
 #include <bpf/bpf_core_read.h>
-#include "zeroprobe.h"
 
 /* Instruction count of Tetragon event_execve */
 #define TARGET_BPF_INSNS 15874
@@ -208,8 +208,6 @@ We disable the Falco probe responsible for detecting `openat_x` events, allowing
 
 ![Disabling openat_x](./hijack-falco.gif)
 
-#### Aquasec
-<demo video>
 
 ### Detection
 
