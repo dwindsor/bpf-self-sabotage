@@ -128,8 +128,6 @@ int handle_bpf_enter(struct trace_event_raw_sys_enter *ctx)
                 union bpf_attr uattr;
                 bpf_probe_read_user(&uattr, sizeof(union bpf_attr), (void *)ctx->args[1]);
 
-                struct bpf_insn insn;
-
                 u32 insn_cnt = uattr.insn_cnt;
                 // Is this our target program?
                 if (insn_cnt != TARGET_BPF_INSNS) {
