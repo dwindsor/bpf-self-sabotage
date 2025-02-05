@@ -229,10 +229,6 @@ Manually dumping the instructions of the hijacked exevce_event would indeed reve
 
 This is impractical and not scalable, though.
 
-### Cisco Hypershield
-
-Cisco Hypershield addresses this attack vector by loading its eBPF programs as soon as possible - during early boot. Once the Hypershield eBPF programs have been loaded into memory, this attack is not possible.
-
 ### Mitigation / Future Work
 
 `bpf_probe_write_user` is the helper that's used to overwrite the contents of userspace memory in the eBPF programs. This function is considered dangerous, and distributions may benefit from disabling it altogether. As of this writing, the latest version of Ubuntu (Noble) still has it enabled by default.
